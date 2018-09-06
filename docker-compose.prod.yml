@@ -1,6 +1,6 @@
 version: '3'
 services:
   my-app:
-    image: jasonhoe928/demo-website:${IMAGE_VERSION}
+    image: jhdev808/demo-website:${IMAGE_VERSION}
     environment:
       NODE_ENV: production

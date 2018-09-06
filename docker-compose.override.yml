@@ -1,7 +1,7 @@
 version: '3'
 services:
   my-app:
-    image: jasonhoe928/demo-website:${IMAGE_VERSION}-local
+    image: jhdev808/articles-products-and-express:${IMAGE_VERSION}-local
     command: ["./node_modules/.bin/nodemon", "app.js"]
     container_name: ap-express
     volumes:
@@ -10,7 +10,7 @@ services:
     environment:
       NODE_ENV: development
     ports:
-      - "5000:${PORT}"
+      - "${PORT}:${PORT}"
     networks:
       - my-app-network
 

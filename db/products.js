@@ -21,8 +21,18 @@ class Products {
       return item.id;
     }
     updateItemById(id) {}
-    deleteItemById(id) {
-        
+    deleteProductById(id) {
+      let removedProduct = null;
+      console.log('deleteProductById =', id);
+      // console.log('this._storage before =', this._storage);
+      this._storage.forEach((element, index) => {
+        if (element.id === Number(id)) {
+          removedProduct = this._storage.splice(index, 1);
+        }
+      });
+      // console.log('this._storage after =', this._storage);
+  
+      return removedProduct;
     }
   }
   
