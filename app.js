@@ -68,6 +68,21 @@ app.get('/article/:title', (req, res) => {
   res.render('articledetails', item);
 });
 
+//render out products edit get
+app.get('/products/:id/edit', (req, res) => {
+  const { id } = req.params;
+  let productToEdit = PE_Inventory.getItemById(id);
+  res.render('edit', { productToEdit });
+});
+
+//render out articles edit get
+app.get('/articles/:id/edit', (req, res) => {
+  console.log('am I getting called')
+  const { id } = req.params;
+  let articleToEdit = Art_Inventory.getItemById(id);
+  res.render('edit', { articleToEdit });
+});
+
 
 
 // add product item
@@ -87,13 +102,57 @@ app.post('/article/new', (req, res) => {
     res.redirect('/articleshome');
 })
 
-// delete product
-app.get('/product/:id/removeProduct', (req, res) => {
-  console.log('delete is here')
+
+//delete product
+app.delete('/products/:id', (req, res) => {
   const { id } = req.params;
   const deleteProduct = PE_Inventory.deleteProductById(id);
-  res.render('removeProduct', { deleteProduct });
+  res.redirect('/productsHome');
+});
+
+//delete article
+app.delete('/articles/:title', (req, res) => {
+  const { title } = req.params;
+  console.log('title', title)
+  const deleteArticle = Art_Inventory.deleteArticleById(title);
+  res.redirect('/articlesHome');
 })
+
+
+
+//edit product
+app.put('/products/:id', (req, res) => {
+  const { id } = req.params;
+  let productToEdit = PE_Inventory.getItemById(id);
+  console.log('productToEdit', productToEdit)
+  if (req.body.name !== productToEdit.name) {
+    productToEdit.name = req.body.name;
+  }
+  if (req.body.price !== productToEdit.price) {
+    productToEdit.price = req.body.price;
+  }
+  if ( req.body.description !== productToEdit.description) {
+    productToEdit.description = req.body.description;
+  }
+  res.redirect(`/product/${id}`);
+});
+
+
+//edit article
+app.put('/articles/:id', (req, res) => {
+  const { id } = req.params;
+  let articleToEdit = Articles_Inv.getItemById(id);
+  if (req.body.title !== articleToEdit.title) {
+    articleToEdit.title = req.body.title;
+  }
+  if (req.body.body !== articleToEdit.body) {
+    articleToEdit.body = req.body.body;
+  }
+  if ( req.body.author !== articleToEdit.author) {
+    articleToEdit.author = req.body.author;
+  }
+  res.redirect(`/articles/${id}`);
+});
 
 
 

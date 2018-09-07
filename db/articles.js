@@ -19,8 +19,18 @@ class Articles {
       return artItem.title;
     }
     updateItemById(id) {}
-    deleteItemById(id) {
-        
+    deleteArticleById(title) {
+      console.log('title', title)
+      let removedArticle = null;
+      // console.log('this._storage before =', this._storage);
+      this._storage.forEach((element, index) => {
+        if (element.title === title) {
+          removedArticle = this._storage.splice(index, 1);
+        }
+      });
+      // console.log('this._storage after =', this._storage);
+  
+      return removedArticle;
     }
   }
   
