@@ -5,7 +5,8 @@ class Articles {
       this.add({
         title: 'Article Test',
         body: 'An article Test',
-        author: '100'
+        author: '100',
+        id: 1
       });
     }
     all() {
