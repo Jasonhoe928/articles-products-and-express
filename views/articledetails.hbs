@@ -1,0 +1,11 @@
+<h1>{{ title }}</h1>
+<br> {{ body }}
+<br> {{ author }} 
+<br> {{> footer}}
+<br>
+<form method='post' action='/articles/{{title}}?_method=DELETE'>
+<button type="submit">Delete article</button>
+</form>
+
+<br>
+<a href="/articles/{{id}}/edit">Edit Article</a>

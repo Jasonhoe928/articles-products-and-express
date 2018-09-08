@@ -1,0 +1,12 @@
+<h1>{{ name }}</h1>
+<br> {{ description }}
+<br> {{ price }} 
+<br> {{> footer}}
+<br>
+<br>
+
+<form method='post' action='/products/{{id}}?_method=DELETE'>
+<button type="submit">Delete product</button>
+</form>
+<br>
+<a href="/products/{{id}}/edit">Edit Product</a>
