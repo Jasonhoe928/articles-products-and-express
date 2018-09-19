@@ -1,25 +1,21 @@
 <h1>Products:</h1>
 <div>
-  <a href="/productshome/">Products</a>
+  <a href="/product/">Products</a>
 </div>
+<div>
+  {{#each products}}
+  <div>{{Name}}</div>
+   {{/each}} 
+</div>
+
 
 <br>
 <br>
 
 <h1>Articles:</h1>
 <div>
-  <a href="/articleshome/">Articles</a>
+  <a href="/article">Articles</a>
 </div>
 
 <br>
 <br>
-
-{{!-- <h1>Articles:</h1>
-{{#each artItem}}
-<div>
-  <a href='/article/{{id}}'>{{title}}</a>
-</div>
-{{/each}}
-
-<br>
-<a href="/article/new">NEW ITEM</a> --}}
