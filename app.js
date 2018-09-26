@@ -38,11 +38,15 @@ app.get('/', (req, res) => {
     .catch(err => {
       console.log('error', err);
     })
-});
+  });
+  
+  
+  app.listen(process.env.EXPRESS_CONTAINER_PORT, () => {
+    console.log(`Started app on port: ${process.env.EXPRESS_CONTAINER_PORT}`);
+  });
 
-
-// // render out the product form
-// app.get('/product/new', (req, res) => {
+  // // render out the product form
+  // app.get('/product/new', (req, res) => {
 //   res.render('productform');
 // });
 
@@ -135,7 +139,7 @@ app.get('/', (req, res) => {
 
 
 
-//edit product
+// // edit product
 // app.put('/products/:id', (req, res) => {
 //   const { id } = req.params;
 //   let productToEdit = PE_Inventory.getItemById(id);
@@ -169,8 +173,3 @@ app.get('/', (req, res) => {
 //   res.redirect(`/articles/${id}`);
 // });
 
-
-
-app.listen(process.env.EXPRESS_CONTAINER_PORT, () => {
-  console.log(`Started app on port: ${process.env.EXPRESS_CONTAINER_PORT}`);
-});

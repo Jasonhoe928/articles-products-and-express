@@ -1,11 +1,14 @@
+{{#with articles}}
 <h1>{{ title }}</h1>
-<br> {{ body }}
+<br> {{ description }}
 <br> {{ author }} 
 <br> {{> footer}}
 <br>
 <form method='post' action='/article/{{title}}?_method=DELETE'>
 <button type="submit">Delete article</button>
 </form>
-
+{{/with}}
 <br>
-<a href="/articles/{{id}}/edit">Edit Article</a>
+<a href="/article/{{ title }}/edit">Edit Article</a>
+<br>
+<a href="/article">back</a>

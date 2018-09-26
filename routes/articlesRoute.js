@@ -4,10 +4,16 @@ const bp = require('body-parser');
 const Articles = require('../db/articles.js');
 const Art_Inventory = new Articles();
 Router.use(bp.urlencoded({ extended: true }));
+const knex = require('../knex/knex.js');
 
 Router.get('/', (req, res) => {
-  const articleItems = Art_Inventory.all();
-  res.render('articleshome', { articleItems });
+  knex.raw('SELECT * FROM articles')
+  .then( result => {
+    const articles = result.rows;
+    console.log('articles', articles);
+    res.render('articleshome', { articles });
+
+  })
 });
 
 //render out article form
@@ -17,51 +23,71 @@ Router.get('/new', (req, res) => {
 
 //render out article details
 Router.get('/:title', (req, res) => {
-  const { title } = req.params;
-  const item = Art_Inventory.getItemById(title);
-  console.log('item CS', item)
-  res.render('articledetails', item);
+  const { title } = req.params; //how does req.params evaluate down and what does it do with {title}?
+  console.log('article req.params', req.params)
+  knex.raw(`SELECT * FROM articles WHERE title = '${title}'`) //why are knex.raw always in ``'s?
+  .then( result => {
+    console.log('result', result)
+    const articles = result.rows[0];
+    console.log('articles Cl', articles)
+    res.render('articledetails', { articles });
+  })
+  .catch(err => {
+    console.log('error', err);
+  })
 });
 
-//render out articles edit get
-Router.get('/:id/edit', (req, res) => {
-  console.log('am I getting called')
-  const { id } = req.params;
-  let articleToEdit = Art_Inventory.getItemById(id);
-  res.render('edit', { articleToEdit });
-});
 
 // add article item
 Router.post('/new', (req, res) => {
-  const artItem = req.body;
-  // console.log('req.body articles ', req.body)
-  console.log('artItems', artItem)
-  Art_Inventory.add(artItem);
-  res.redirect('/article');
+  const articles = req.body;
+  console.log('req.body', req.body)
+  knex.raw(`INSERT INTO articles (title, description, author) VALUES ('${articles.title}', '${articles.description}', '${articles.author}')`)
+    .then( result => {
+      console.log('result', result);
+      res.redirect('/article');
+    })
+    .catch( err => {
+      console.log('error', err)
+      res.redirect('/')
+    })
 });
 
 //delete article
 Router.delete('/:title', (req, res) => {
   const { title } = req.params;
-  console.log('title', title)
-  const deleteArticle = Art_Inventory.deleteArticleById(title);
-  res.redirect('/articlesHome');
+  knex.raw(`DELETE FROM articles WHERE title = '${title}'`)
+  .then( result => {
+    console.log('deleted result', result);
+    res.redirect('/article');
+  })
+  .catch( err => {
+    console.log('error, err');
+    res.redirect('/');
+  })
 });
 
-//edit article
-Router.put('/:id', (req, res) => {
-  const { id } = req.params;
-  let articleToEdit = Articles_Inv.getItemById(id);
-  if (req.body.title !== articleToEdit.title) {
-    articleToEdit.title = req.body.title;
-  }
-  if (req.body.body !== articleToEdit.body) {
-    articleToEdit.body = req.body.body;
-  }
-  if ( req.body.author !== articleToEdit.author) {
-    articleToEdit.author = req.body.author;
-  }
-  res.redirect(`/${id}`);
+//render out articles edit get
+Router.get('/:title/edit', (req, res) => {
+  console.log('am I getting called')
+  const { title } = req.params;
+  knex.raw(`SELECT * FROM articles WHERE title = '${ title }'`)
+    .then(result => {
+      const articleToEdit = result.rows[0];
+      res.render('edit', { articleToEdit });
+    })
 });
 
+//edit article put
+Router.put('/:title', (req, res) => {
+  const { title } = req.params;
+  knex.raw(`UPDATE articles SET title = '${req.body.title}', description = '${req.body.description}', author = ${req.body.author} WHERE title = ${title}`)
+    .then( result => {
+      console.log('EDIT articles redirect /article/${title}');
+      res.redirect(`/${title}`);
+    })
+    .catch( err => {
+      console.log('error', err)
+    });
+  });
 module.exports = Router;

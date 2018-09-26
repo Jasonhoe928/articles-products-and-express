@@ -1,11 +1,15 @@
 const express = require('express');
 const Router = express.Router();
 const bp = require('body-parser');
+var methodOverride = require('method-override');
 const Products = require('../db/products.js');
 const PE_Inventory = new Products();
 const knex = require('../knex/knex.js');
-Router.use(bp.urlencoded({ extended: true }));
 
+Router.use(bp.urlencoded({ extended: true }));
+Router.use(methodOverride('_method'));
+
+//render out product home page
 Router.get('/', (req, res) => {
   knex.raw('SELECT * FROM products')
     .then( result => {
@@ -25,6 +29,7 @@ Router.get('/new', (req, res) => {
 
 // render out product details
 Router.get('/:id', (req, res) => {
+  console.log('req params log', req.params)
   const { id } = req.params;
   knex.raw(`SELECT * FROM products WHERE id = ${id}`)
   .then( result => {
@@ -41,9 +46,31 @@ Router.get('/:id', (req, res) => {
 //render out products edit get
 Router.get('/:id/edit', (req, res) => {
   const { id } = req.params;
-  let productToEdit = PE_Inventory.getItemById(id);
-  res.render('edit', { productToEdit });
+  knex.raw(`SELECT * FROM products WHERE id = ${id}`)
+    .then(result => {
+      const productToEdit = result.rows[0]
+      res.render(`edit`, { productToEdit })
+    })
+    .catch(err => {
+      console.log('error', err)
+      res.redirect('/product')
+    })
 });
+
+//render out edit product put
+Router.put('/:id', (req, res) => {
+  console.log('fired')
+  const { id } = req.params;
+    knex.raw(`UPDATE products SET name = '${req.body.name}', description = '${req.body.description}', price = ${req.body.price} WHERE id = ${id}`)
+      .then( result => {
+        console.log('EDIT product redirect /products/${id}');
+        res.redirect(`/product/${id}`);
+      })
+      .catch( err => {
+        console.log('error', err)
+      });
+});
+
 
 // add product item
 Router.post('/new', (req, res) => {
@@ -65,7 +92,7 @@ Router.delete('/:id', (req, res) => {
   knex.raw(`DELETE FROM products WHERE id = ${id}`)
     .then( result => {
       console.log('delete result', result)
-      res.render('/product');
+      res.redirect('/product');
     })
     .catch( err => {
       console.log('error', err)
